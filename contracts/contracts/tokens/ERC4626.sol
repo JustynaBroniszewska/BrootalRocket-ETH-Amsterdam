@@ -7,5 +7,13 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC4626} from "./interface/IERC4626.sol";
 
 contract ERC4626 is ERC20, IERC4626 {
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
+    IERC20 public asset;
+
+    constructor(
+        IERC20 _asset,
+        string memory name,
+        string memory symbol
+    ) ERC20(name, symbol) {
+        asset = _asset;
+    }
 }
