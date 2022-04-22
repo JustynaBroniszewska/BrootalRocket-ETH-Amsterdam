@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Config, DAppProvider, Mainnet } from "@usedapp/core";
 import { getDefaultProvider } from "ethers";
 import { WalletProvider } from "./providers/WalletProvider";
+import { ChakraProvider } from "@chakra-ui/provider";
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
@@ -19,11 +20,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <DAppProvider config={config}>
-      <WalletProvider>
-        <App />
-      </WalletProvider>
-    </DAppProvider>
+    <ChakraProvider>
+      <DAppProvider config={config}>
+        <WalletProvider>
+          <App />
+        </WalletProvider>
+      </DAppProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
 
