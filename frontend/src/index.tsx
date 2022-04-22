@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Config, DAppProvider, Mainnet } from "@usedapp/core";
 import { getDefaultProvider } from "ethers";
+import { WalletProvider } from "./providers/WalletProvider";
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
@@ -19,7 +20,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <DAppProvider config={config}>
-      <App />
+      <WalletProvider>
+        <App />
+      </WalletProvider>
     </DAppProvider>
   </React.StrictMode>
 );
