@@ -1,11 +1,19 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
-import { useEthers } from "@usedapp/core";
+import { useEthers, ChainId } from "@usedapp/core";
+
+const NETWORK_CONNECTIONS = {
+  [ChainId.Mainnet]:
+    "https://mainnet.infura.io/v3/f88abc181a4a45a6bc47bdda05a94944",
+  [ChainId.Ropsten]:
+    "https://ropsten.infura.io/v3/f88abc181a4a45a6bc47bdda05a94944",
+};
 
 function App() {
-  const { account, activateBrowserWallet, deactivate } = useEthers();
+  const { account, activateBrowserWallet, deactivate, activate } = useEthers();
   return (
     <div className="App">
       <header className="App-header">
@@ -15,11 +23,26 @@ function App() {
         </p>
         <p>{account}</p>
         <button
-          onClick={() => {
-            account ? deactivate() : activateBrowserWallet();
+          onClick={async () => {
+            if (!account) {
+              try {
+                await activate(
+                  new WalletConnectConnector({
+                    rpc: NETWORK_CONNECTIONS,
+                    bridge: "https://bridge.walletconnect.org",
+                    qrcode: true,
+                  })
+                );
+              } catch (error) {
+                console.log(error);
+              }
+            } else {
+              localStorage.removeItem("walletconnect");
+              deactivate();
+            }
           }}
         >
-          {account ? "Already connected" : "Connect"}
+          {account ? "Already connected" : "Connect with walletconnect"}
         </button>
         <a
           className="App-link"
