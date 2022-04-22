@@ -14,6 +14,11 @@ const NETWORK_CONNECTIONS = {
 
 function App() {
   const { account, activateBrowserWallet, deactivate, activate } = useEthers();
+
+  const deactivateWallet = () => {
+    localStorage.removeItem("walletconnect");
+    deactivate();
+  };
   return (
     <div className="App">
       <header className="App-header">
@@ -37,12 +42,18 @@ function App() {
                 console.log(error);
               }
             } else {
-              localStorage.removeItem("walletconnect");
-              deactivate();
+              deactivateWallet();
             }
           }}
         >
           {account ? "Already connected" : "Connect with walletconnect"}
+        </button>
+        <button
+          onClick={() => {
+            account ? deactivateWallet() : activateBrowserWallet();
+          }}
+        >
+          {account ? "Already connected" : "Connect with metamask"}
         </button>
         <a
           className="App-link"
