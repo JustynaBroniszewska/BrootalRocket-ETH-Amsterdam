@@ -1,0 +1,42 @@
+{
+  "name": "contracts",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./build",
+    "lint:sol": "solhint 'contracts/**/*.sol' && prettylint 'contracts/**/*.sol'",
+    "lint:ts": "eslint '{test,scripts}/**/*.ts' -c .eslintrc.typescript.js --cache",
+    "lint:fix": "prettier 'contracts/**/*.sol' --write --loglevel error && yarn run lint:ts --fix",
+    "lint": "yarn run lint:sol && yarn run lint:ts",
+    "build": "yarn clean && hardhat compile",
+    "test": "mocha 'test/**/*.test.ts'"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.4",
+    "ethers": "^5.6.4",
+    "hardhat": "^2.9.3"
+  },
+  "dependencies": {
+    "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/hardhat": "^6.0.0",
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^17.0.25",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "eslint": "^8.14.0",
+    "eslint-plugin-no-only-tests": "^2.6.0",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "prettylint": "^1.0.0",
+    "solc-0.8": "npm:solc@0.8.10",
+    "solhint": "^3.3.7",
+    "ts-node": "^10.7.0",
+    "tsconfig-paths": "^3.14.1",
+    "typechain": "^8.0.0",
+    "typescript": "^4.6.3"
+  }
+}
