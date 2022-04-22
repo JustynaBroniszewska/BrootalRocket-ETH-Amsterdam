@@ -3,13 +3,7 @@ import "./App.css";
 
 import { useEthers } from "@usedapp/core";
 import { useWallet } from "./providers/WalletProvider";
-
-Object.entries(localStorage)
-  .map((x) => x[0])
-  .filter((x) => x.substring(0, 11) === "-walletlink")
-  .forEach((entry) => {
-    localStorage.removeItem(entry);
-  });
+import { Button, VStack } from "@chakra-ui/react";
 
 function App() {
   const {
@@ -31,20 +25,24 @@ function App() {
         <p>{account}</p>
 
         {account ? (
-          <button onClick={deactivateWallet}>Disconnect wallet</button>
+          <Button colorScheme="gray" onClick={deactivateWallet}>
+            Disconnect wallet
+          </Button>
         ) : (
-          <>
-            <button onClick={activateWalletConnect}>
+          <VStack>
+            <Button colorScheme="blue" onClick={activateWalletConnect}>
               Connect with walletconnect
-            </button>
-            <button onClick={activateWalletLink}>
+            </Button>
+            <Button colorScheme="blue" onClick={activateWalletLink}>
               Connect with coinbase wallet
-            </button>
-            <button onClick={activateWeb3Auth}>Connect with web3auth</button>
-            <button onClick={activateBrowserWallet}>
+            </Button>
+            <Button colorScheme="blue" onClick={activateWeb3Auth}>
+              Connect with web3auth
+            </Button>
+            <Button colorScheme="blue" onClick={activateBrowserWallet}>
               Connect with metamask
-            </button>
-          </>
+            </Button>
+          </VStack>
         )}
         <a
           className="App-link"

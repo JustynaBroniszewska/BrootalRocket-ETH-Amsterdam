@@ -1,11 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Config, DAppProvider, Mainnet } from "@usedapp/core";
 import { getDefaultProvider } from "ethers";
 import { WalletProvider } from "./providers/WalletProvider";
+import { ChakraProvider } from "@chakra-ui/provider";
+import { theme } from "./theme";
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
@@ -14,17 +16,18 @@ const config: Config = {
   },
 };
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <DAppProvider config={config}>
       <WalletProvider>
-        <App />
+        <ChakraProvider theme={theme}>
+          asfsfsa
+          <App />
+        </ChakraProvider>
       </WalletProvider>
     </DAppProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")!
 );
 
 // If you want to start measuring performance in your app, pass a function
