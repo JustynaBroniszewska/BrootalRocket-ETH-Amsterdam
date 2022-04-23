@@ -18,6 +18,12 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Contract, utils } from "ethers";
 
+const PrimaryButton = ({ children }: any) => (
+  <Button colorScheme="blue" w="240px">
+    {children}
+  </Button>
+);
+
 export const Manage = () => {
   const { account } = useEthers();
   const blockNumber = useBlockNumber();
@@ -50,7 +56,7 @@ export const Manage = () => {
         </Heading>
         <Spacer />
 
-        <LinkBox as={Button}>
+        <LinkBox as={PrimaryButton} colorScheme>
           <LinkOverlay as={Link} to="/create" display="block">
             Create
           </LinkOverlay>
