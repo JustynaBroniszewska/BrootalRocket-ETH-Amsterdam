@@ -34,7 +34,7 @@ import {
   useEthers,
   useTokenAllowance,
 } from "@usedapp/core";
-import { Contract, utils, constants } from "ethers";
+import { Contract, utils } from "ethers";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ASSETS } from "./Create";
