@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Flex, Button, Box, Heading } from "@chakra-ui/react";
 import { useEthers } from "@usedapp/core";
-import { WalletMenu } from "./WalletModal";
+import { WalletMenu } from "./WalletMenu";
 import { useWallet } from "../providers/WalletProvider";
 
 interface LayoutProps {
