@@ -8,6 +8,7 @@ import {
   Textarea,
   Button,
 } from "@chakra-ui/react";
+import { SUPPORTED_NETWORKS } from "../networks";
 
 export const Create = () => {
   return (
@@ -19,7 +20,11 @@ export const Create = () => {
         <FormControl>
           <FormLabel htmlFor="network">Network:</FormLabel>
           <Select id="network">
-            <option value="option1">Mainnet</option>
+            {SUPPORTED_NETWORKS.map((network) => (
+              <option value={`option-${network.chainName}`}>
+                {network.chainName}
+              </option>
+            ))}
           </Select>
         </FormControl>
         <FormControl>
