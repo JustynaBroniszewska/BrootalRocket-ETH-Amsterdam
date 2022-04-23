@@ -36,6 +36,7 @@ import {
 } from "@usedapp/core";
 import { Contract, utils, constants } from "ethers";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { ASSETS } from "./Create";
 
 export const Earn = () => {
@@ -64,7 +65,8 @@ export const Earn = () => {
         Available portfolios
       </Heading>
       <List spacing="16px" mt="32px">
-        {loading &&
+        {!data &&
+          loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
 
         {data?.vaults?.map((vault: any) => (
@@ -73,6 +75,11 @@ export const Earn = () => {
           </ListItem>
         ))}
       </List>
+      <LinkBox as={Button} mx="auto" mt="32px">
+        <LinkOverlay as={Link} to="/manage" display="block">
+          Go to my portfolios
+        </LinkOverlay>
+      </LinkBox>
     </>
   );
 };

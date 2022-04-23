@@ -18,7 +18,7 @@ export const Layout = ({ children }: LayoutProps) => {
     <Box minH="100vh" p="4">
       <Flex justify="space-between" align="baseline">
         <StyleLink as={Link} to="/" style={{ textDecoration: "none" }}>
-          <Heading>Degen heaven</Heading>
+          <Heading>DEGEN HEAVEN</Heading>
         </StyleLink>
 
         {account ? (

@@ -57,7 +57,8 @@ export const Manage = () => {
         </LinkBox>
       </Flex>
       <List spacing="16px" mt="32px">
-        {loading &&
+        {!data &&
+          loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
 
         {data?.vaults?.map((vault: any) => (
@@ -66,6 +67,11 @@ export const Manage = () => {
           </ListItem>
         ))}
       </List>
+      <LinkBox as={Button} mx="auto" mt="32px">
+        <LinkOverlay as={Link} to="/earn" display="block">
+          Go to all portfolios
+        </LinkOverlay>
+      </LinkBox>
     </>
   );
 };
