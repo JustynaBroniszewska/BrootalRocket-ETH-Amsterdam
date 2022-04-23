@@ -13,7 +13,7 @@ export const Layout = ({ children }: LayoutProps) => {
   const { deactivateWallet } = useWallet();
 
   return (
-    <Box minH="full" p="4">
+    <Box minH="100vh" p="4">
       <Flex justify="space-between" align="baseline">
         <Heading>Degen heaven</Heading>
         {account ? (
@@ -24,7 +24,9 @@ export const Layout = ({ children }: LayoutProps) => {
           <WalletMenu />
         )}
       </Flex>
-      <Box py="8">{children}</Box>
+      <Box py="8" h="full">
+        {children}
+      </Box>
     </Box>
   );
 };
