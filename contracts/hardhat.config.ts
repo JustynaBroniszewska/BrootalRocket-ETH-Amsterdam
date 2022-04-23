@@ -17,6 +17,10 @@ module.exports = {
     spacing: 2,
   },
   networks: {
+    kovan: {
+      url: `https://kovan.optimism.io`,
+      accounts: [`${process.env.PRIVATE_KEY}`]
+    },
     hardhat: {
       initialDate: '2020-01-01T00:00:00',
       allowUnlimitedContractSize: true,
