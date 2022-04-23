@@ -29,7 +29,14 @@ export const Layout = ({ children }: LayoutProps) => {
           <WalletMenu />
         )}
       </Flex>
-      <Flex py="8" h="full" flexDirection="column" maxW="3xl" mx="auto">
+      <Flex
+        py="8"
+        h="full"
+        flexDirection="column"
+        maxW="3xl"
+        mx="auto"
+        align="center"
+      >
         {children}
       </Flex>
     </Box>

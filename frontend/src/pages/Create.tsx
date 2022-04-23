@@ -47,6 +47,7 @@ export const Create = () => {
       <VStack
         as="form"
         maxW="sm"
+        w="full"
         mt="4"
         onSubmit={async (e) => {
           e.preventDefault();

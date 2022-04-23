@@ -44,7 +44,7 @@ export const Manage = () => {
 
   return (
     <>
-      <Flex>
+      <Flex w="full">
         <Heading as="h3" size="lg">
           Available portfolios
         </Heading>
@@ -56,7 +56,7 @@ export const Manage = () => {
           </LinkOverlay>
         </LinkBox>
       </Flex>
-      <List spacing="16px" mt="32px">
+      <List spacing="16px" mt="32px" w="full">
         {!data &&
           loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
