@@ -1,16 +1,23 @@
-import { Flex } from "@chakra-ui/react";
+import { Button, Flex, Image, LinkBox, LinkOverlay } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { Link as StyleLink } from "@chakra-ui/react";
 
 export const Home = () => {
   return (
-    <Flex align="center" justify="center" gap="16px">
-      <StyleLink as={Link} to="earn">
-        Earn
-      </StyleLink>
-      <StyleLink as={Link} to="manage">
-        Manage
-      </StyleLink>
-    </Flex>
+    <>
+      <Image src="vault.svg" mt="32px" />
+      <Flex align="center" justify="center" gap="16px" mt="32px">
+        <LinkBox as={Button} w="32">
+          <LinkOverlay as={Link} to="/earn" display="block">
+            Earn
+          </LinkOverlay>
+        </LinkBox>
+
+        <LinkBox as={Button} w="32">
+          <LinkOverlay as={Link} to="/manage" display="block">
+            Manage
+          </LinkOverlay>
+        </LinkBox>
+      </Flex>
+    </>
   );
 };
