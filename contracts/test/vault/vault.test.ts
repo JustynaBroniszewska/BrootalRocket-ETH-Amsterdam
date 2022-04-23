@@ -27,7 +27,7 @@ describe('Vault.constructor', () => {
   })
 
   it('execute', async () => {
-    const { vault, wallet, other, counter } = await loadFixture(vaultFixture)
+    const { vault, other, counter } = await loadFixture(vaultFixture)
     await expect(vault.connect(other).execute(constants.AddressZero, '0x00')).to.be.revertedWith('Only owner allowed')
     expect(await counter.counter()).to.eq(0)
     const counterInt = new utils.Interface(['function increaseCounter() public'])
@@ -38,7 +38,6 @@ describe('Vault.constructor', () => {
 
     await vault.executeMany([counter.address, counter.address], [data, data])
     expect(await counter.counter()).to.eq(3)
-    
   })
 
   it('shares calculation', async () => {
@@ -51,7 +50,7 @@ describe('Vault.constructor', () => {
     await vault.connect(wallet).deposit(1, wallet.address)
     await token.mint(vault.address, 1)
     await vault.connect(other).deposit(2, other.address)
-    
+
     expect(await vault.balanceOf(wallet.address)).to.eq(1)
     expect(await vault.balanceOf(other.address)).to.eq(1)
   })

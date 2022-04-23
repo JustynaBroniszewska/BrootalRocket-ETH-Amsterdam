@@ -17,7 +17,7 @@ interface IERC4626 {
     function previewDeposit(uint256 assets) external view returns (uint256 shares);
 
     function deposit(uint256 assets, address receiver) external returns (uint256 shares);
-    
+
     function maxMint(address receiver) external view returns (uint256 maxShares);
 
     function previewMint(uint256 shares) external view returns (uint256 assets);
@@ -28,13 +28,21 @@ interface IERC4626 {
 
     function previewWithdraw(uint256 assets) external view returns (uint256 shares);
 
-    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256 shares);
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address owner
+    ) external returns (uint256 shares);
 
     function maxRedeem(address owner) external view returns (uint256 maxShares);
 
     function previewRedeem(uint256 shares) external view returns (uint256 assets);
 
-    function redeem(uint256 shares, address receiver, address owner) external returns (uint256 assets);
+    function redeem(
+        uint256 shares,
+        address receiver,
+        address owner
+    ) external returns (uint256 assets);
 
     event Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares);
     event Withdraw(address indexed caller, address indexed receiver, address indexed owner, uint256 assets, uint256 shares);

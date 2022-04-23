@@ -12,11 +12,12 @@ contract Vault is ERC20, IERC4626 {
 
     constructor(
         IERC20 _asset,
+        address _owner,
         string memory name,
         string memory symbol
     ) ERC20(name, symbol) {
         asset = _asset;
-        owner = msg.sender;
+        owner = _owner;
     }
 
     function totalAssets() public view override returns (uint256) {
@@ -30,14 +31,22 @@ contract Vault is ERC20, IERC4626 {
         emit Deposit(msg.sender, receiver, amount, shares);
     }
 
-    function withdraw(uint256 assets, address receiver, address _owner) external override returns (uint256 shares) {
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address _owner
+    ) external override returns (uint256 shares) {
         shares = previewWithdraw(assets);
         _burn(receiver, shares);
         asset.transfer(receiver, assets);
         emit Withdraw(msg.sender, receiver, _owner, assets, shares);
     }
 
-    function redeem(uint256 shares, address receiver, address _owner) external override returns (uint256 assets) {
+    function redeem(
+        uint256 shares,
+        address receiver,
+        address _owner
+    ) external override returns (uint256 assets) {
         assets = previewRedeem(shares);
         _burn(receiver, shares);
         asset.transfer(receiver, assets);
@@ -51,19 +60,19 @@ contract Vault is ERC20, IERC4626 {
         emit Deposit(msg.sender, receiver, assets, shares);
     }
 
-    function previewDeposit(uint256 assets) public override view returns (uint256 shares) {
+    function previewDeposit(uint256 assets) public view override returns (uint256 shares) {
         shares = convertToShares(assets);
     }
 
-    function previewMint(uint256 shares) public override view returns (uint256 assets) {
+    function previewMint(uint256 shares) public view override returns (uint256 assets) {
         assets = convertToAssets(shares);
     }
 
-    function previewWithdraw(uint256 assets) public override view returns (uint256 shares) {
+    function previewWithdraw(uint256 assets) public view override returns (uint256 shares) {
         shares = convertToShares(assets);
     }
 
-    function previewRedeem(uint256 shares) public override view returns (uint256 assets) {
+    function previewRedeem(uint256 shares) public view override returns (uint256 assets) {
         assets = convertToAssets(shares);
     }
 
@@ -71,7 +80,7 @@ contract Vault is ERC20, IERC4626 {
         if (totalSupply() == 0) {
             shares = assets;
         } else {
-            shares = assets * totalSupply() / totalAssets();
+            shares = (assets * totalSupply()) / totalAssets();
         }
     }
 
@@ -79,7 +88,7 @@ contract Vault is ERC20, IERC4626 {
         if (totalSupply() == 0) {
             assets = 0;
         } else {
-            assets = shares * totalAssets() / totalSupply();
+            assets = (shares * totalAssets()) / totalSupply();
         }
     }
 
@@ -94,20 +103,20 @@ contract Vault is ERC20, IERC4626 {
     function maxWithdraw(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
-    
+
     function maxDeposit(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
 
     function execute(address target, bytes calldata data) public {
-        require(msg.sender == owner, 'Only owner allowed');
-        (bool success,) = target.call(data);
+        require(msg.sender == owner, "Only owner allowed");
+        (bool success, ) = target.call(data);
         require(success);
     }
 
     function executeMany(address[] calldata targets, bytes[] calldata data) public {
-        require(msg.sender == owner, 'Only owner allowed');
-        for(uint256 i = 0; i < targets.length; i++) {
+        require(msg.sender == owner, "Only owner allowed");
+        for (uint256 i = 0; i < targets.length; i++) {
             execute(targets[i], data[i]);
         }
     }
