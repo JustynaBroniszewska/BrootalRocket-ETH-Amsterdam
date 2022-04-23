@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Flex, Button, Box, Heading } from "@chakra-ui/react";
 import { useEthers } from "@usedapp/core";
-import { WalletModal } from "./WalletModal";
+import { WalletMenu } from "./WalletModal";
 import { useWallet } from "../providers/WalletProvider";
 
 interface LayoutProps {
@@ -21,7 +21,7 @@ export const Layout = ({ children }: LayoutProps) => {
             Disconnect wallet
           </Button>
         ) : (
-          <WalletModal />
+          <WalletMenu />
         )}
       </Flex>
       <Box py="8">{children}</Box>

@@ -1,7 +1,7 @@
 import { Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useWallet } from "../providers/WalletProvider";
 
-export const WalletModal = () => {
+export const WalletMenu = () => {
   const {
     activateBrowserWallet,
     activateWalletConnect,
