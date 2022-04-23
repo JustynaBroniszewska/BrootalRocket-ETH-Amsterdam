@@ -3,16 +3,11 @@ import "./App.css";
 
 import { useEthers } from "@usedapp/core";
 import { useWallet } from "./providers/WalletProvider";
-import { Button, VStack } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
+import { WalletModal } from "./components/WalletModal";
 
 function App() {
-  const {
-    activateBrowserWallet,
-    activateWalletConnect,
-    activateWalletLink,
-    activateWeb3Auth,
-    deactivateWallet,
-  } = useWallet();
+  const { deactivateWallet } = useWallet();
   const { account } = useEthers();
 
   return (
@@ -29,20 +24,7 @@ function App() {
             Disconnect wallet
           </Button>
         ) : (
-          <VStack>
-            <Button colorScheme="blue" onClick={activateWalletConnect}>
-              Connect with walletconnect
-            </Button>
-            <Button colorScheme="blue" onClick={activateWalletLink}>
-              Connect with coinbase wallet
-            </Button>
-            <Button colorScheme="blue" onClick={activateWeb3Auth}>
-              Connect with web3auth
-            </Button>
-            <Button colorScheme="blue" onClick={activateBrowserWallet}>
-              Connect with metamask
-            </Button>
-          </VStack>
+          <WalletModal />
         )}
         <a
           className="App-link"

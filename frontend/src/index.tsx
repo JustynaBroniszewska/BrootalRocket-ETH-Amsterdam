@@ -21,7 +21,6 @@ ReactDOM.render(
     <DAppProvider config={config}>
       <WalletProvider>
         <ChakraProvider theme={theme}>
-          asfsfsa
           <App />
         </ChakraProvider>
       </WalletProvider>
