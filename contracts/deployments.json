@@ -1,0 +1,8 @@
+{
+  "optimism-kovan": {
+    "vaultFactory": {
+      "txHash": "0xe8b6e080081511e418728ccfbc500bec986d0903a166758546c1c5c0652678f7",
+      "address": "0x97Ea1940E864f0e3d7184A6e9d3ea913fb8B0AC8"
+    }
+  }
+}

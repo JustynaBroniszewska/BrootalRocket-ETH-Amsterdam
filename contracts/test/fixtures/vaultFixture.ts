@@ -3,7 +3,7 @@ import { Wallet } from 'ethers'
 
 export async function vaultFixture([wallet]: Wallet[]) {
   const token = await new USD__factory(wallet).deploy('token', 'TOKEN')
-  const vault = await new Vault__factory(wallet).deploy(token.address, wallet.address, 'Vault', 'VAULT')
+  const vault = await new Vault__factory(wallet).deploy(token.address, wallet.address, token.address, , 'Vault', 'VAULT')
   const counter = await new Counter__factory(wallet).deploy()
   return { token, vault, counter }
 }

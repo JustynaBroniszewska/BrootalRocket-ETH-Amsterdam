@@ -9,7 +9,8 @@
     "lint:ts": "eslint '{test,scripts}/**/*.ts' -c .eslintrc.typescript.js --cache",
     "lint:fix": "prettier 'contracts/**/*.sol' --write --loglevel error && yarn run lint:ts --fix",
     "lint": "yarn run lint:sol && yarn run lint:ts",
-    "build": "yarn clean && hardhat compile",
+    "build": "yarn clean && hardhat compile && bash ./utils/bash/indexBuild.sh",
+    "deploy": "yarn mars && yarn ts-node scripts/deploy.ts --network https://kovan.optimism.io -w .waffle.json -o deployments.json -v",
     "test": "mocha 'test/**/*.test.ts'"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@typescript-eslint/parser": "^5.20.0",
     "eslint": "^8.14.0",
     "eslint-plugin-no-only-tests": "^2.6.0",
+    "ethereum-mars": "0.1.10",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "prettylint": "^1.0.0",
     "solc-0.8": "npm:solc@0.8.10",

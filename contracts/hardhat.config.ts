@@ -1,6 +1,7 @@
 import '@typechain/hardhat'
 import '@nomiclabs/hardhat-waffle'
 import 'tsconfig-paths/register'
+import './abi-exporter'
 
 import mocharc from './.mocharc.json'
 import compiler from './.compiler.json'
