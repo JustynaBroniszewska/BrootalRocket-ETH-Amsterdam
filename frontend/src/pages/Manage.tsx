@@ -108,6 +108,13 @@ const Portfolio = ({ vault }: PortfolioProps) => {
         <Skeleton height="20px" />
       )}
       <Spacer />
+
+      <LinkBox as={Button}>
+                <LinkOverlay href={`/portfolio/${id}`} display="block" >
+                  Manage
+                </LinkOverlay>
+              </LinkBox>
+
       <Button>Manage</Button>
     </Grid>
   );
