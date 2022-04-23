@@ -3,7 +3,7 @@ import { setupFixtureLoader } from 'test/setup'
 import { vaultFactoryFixture } from 'fixtures/vaultFactoryFixtures'
 import { Vault__factory } from 'build/types'
 
-describe('Vault.constructor', () => {
+describe('VaultFactory', () => {
   const loadFixture = setupFixtureLoader()
 
   it('creates vault', async () => {

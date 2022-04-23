@@ -3,7 +3,7 @@ import { vaultFixture } from 'fixtures/vaultFixture'
 import { setupFixtureLoader } from 'test/setup'
 import { constants, utils } from 'ethers'
 
-describe('Vault.constructor', () => {
+describe('Vault', () => {
   const loadFixture = setupFixtureLoader()
 
   it('sets asset', async () => {
