@@ -1,24 +1,26 @@
-import { FastifyPluginAsync } from 'fastify'
-import { PortfolioService } from '../services/PortfolioService'
+import { FastifyPluginAsync } from "fastify";
+import { PortfolioService } from "../services/PortfolioService";
 
 const portfolio: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  const service = new PortfolioService()
+  const service = new PortfolioService();
 
-  fastify.post('/portfolio', async function (request, reply) {
-
-    const body = request.body as any
+  fastify.post("/portfolio", async function (request, reply) {
+    const body = request.body as any;
     return service.createPortfolio({
       account: body.account,
       description: body.description,
       portfolioName: body.portfolioName,
-    })
-  })
+    });
+  });
 
-  fastify.get('/portfolio/:account/:name', async function (request, reply) {
-    const req = request as any
-    return service.getPortfolio(req.params.account, req.params.name)
+  fastify.get("/portfolio/:account/:name", async function (request, reply) {
+    const req = request as any;
+    return service.getPortfolio(req.params.account, req.params.name);
+  });
 
-  })
-}
+  fastify.get("/portfolio", async function (request, reply) {
+    return service.getPortfolios();
+  });
+};
 
 export default portfolio;

@@ -14,6 +14,7 @@ import { useContractFunction, useEthers } from "@usedapp/core";
 import { Contract, utils } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import axios from "axios";
 
 export const ASSETS = [
   {
@@ -23,7 +24,7 @@ export const ASSETS = [
 ];
 
 export const Create = () => {
-  const { switchNetwork } = useEthers();
+  const { switchNetwork, account } = useEthers();
   const navigate = useNavigate();
   const { send, state } = useContractFunction(
     new Contract(
@@ -57,11 +58,17 @@ export const Create = () => {
           console.log({ targetChainId });
           switchNetwork(targetChainId);
           const asset = target.asset.value;
-          const name = target.name.value;
+          const portfolioName = target.name.value;
           const symbol = target.symbol.value;
+          const description = target.description.value;
 
-          console.log({ asset, name, symbol });
-          await send(asset, name, symbol);
+          await axios.post("http://localhost:3001/portfolio", {
+            account,
+            portfolioName,
+            description,
+          });
+
+          await send(asset, portfolioName, symbol);
         }}
       >
         <FormControl>
