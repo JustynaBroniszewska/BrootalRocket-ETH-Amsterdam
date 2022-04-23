@@ -20,4 +20,13 @@ contract Vault is ERC20, IERC4626 {
     function totalAssets() public override view returns (uint256) {
         return asset.balanceOf(address(this));
     }
+
+    function deposit(uint256 amount, address receiver) external override returns (uint256 shares) {
+        shares = amount;
+        emit Deposit(msg.sender, receiver, amount, amount);
+    }
+
+    function convertToShares(uint256 amount) public override view returns (uint256) {
+        return amount;
+    }
 }
