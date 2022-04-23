@@ -1,0 +1,15 @@
+type Vault @entity {
+  id: ID!
+  owner: Bytes!
+  asset: Asset!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}
+
+type Asset @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}

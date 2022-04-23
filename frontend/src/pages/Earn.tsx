@@ -1,3 +1,4 @@
+import { useQuery, gql } from "@apollo/client";
 import {
   Accordion,
   AccordionItem,
@@ -26,29 +27,30 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 
-const portfolios = [
-  {
-    name: "Super name",
-    owner: "The dude",
-    value: "12",
-  },
-  {
-    name: "Cool name",
-    owner: "Other dude",
-    value: "10",
-  },
-];
-
 export const Earn = () => {
+  const { data } = useQuery(gql`
+    query getVaults {
+      vaults {
+        id
+        owner
+        asset {
+          id
+        }
+        name
+        symbol
+      }
+    }
+  `);
+
   return (
     <>
       <Heading as="h3" size="lg">
         Available portfolios
       </Heading>
       <List spacing="16px" mt="32px">
-        {portfolios.map((portfolio) => (
-          <ListItem>
-            <Portfolio portfolio={portfolio} />
+        {data?.vaults?.map((vault: any) => (
+          <ListItem key={vault.id}>
+            <Portfolio vault={vault} />
           </ListItem>
         ))}
       </List>
@@ -57,11 +59,11 @@ export const Earn = () => {
 };
 
 interface PortfolioProps {
-  portfolio: typeof portfolios[number];
+  vault: any;
 }
 
-const Portfolio = ({ portfolio }: PortfolioProps) => {
-  const { name, owner, value } = portfolio;
+const Portfolio = ({ vault }: PortfolioProps) => {
+  const { name, owner } = vault;
   return (
     <Accordion allowToggle>
       <AccordionItem>
@@ -74,7 +76,7 @@ const Portfolio = ({ portfolio }: PortfolioProps) => {
             <Text flex="1">{name}</Text>
             <Divider color="white" /> <Text>{owner}</Text>
             <Divider />
-            <Text>{value}M TVL</Text>
+            <Text>12M TVL</Text>
             <AccordionIcon />
           </Grid>
         </AccordionButton>

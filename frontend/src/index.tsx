@@ -8,6 +8,7 @@ import { getDefaultProvider } from "ethers";
 import { WalletProvider } from "./providers/WalletProvider";
 import { ChakraProvider } from "@chakra-ui/provider";
 import { theme } from "./theme";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
@@ -16,15 +17,22 @@ const config: Config = {
   },
 };
 
+const client = new ApolloClient({
+  uri: "https://api.thegraph.com/subgraphs/name/nezouse/degenheaven",
+  cache: new InMemoryCache(),
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <DAppProvider config={config}>
-      <WalletProvider>
-        <ChakraProvider theme={theme}>
-          <App />
-        </ChakraProvider>
-      </WalletProvider>
-    </DAppProvider>
+    <ApolloProvider client={client}>
+      <DAppProvider config={config}>
+        <WalletProvider>
+          <ChakraProvider theme={theme}>
+            <App />
+          </ChakraProvider>
+        </WalletProvider>
+      </DAppProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")!
 );
