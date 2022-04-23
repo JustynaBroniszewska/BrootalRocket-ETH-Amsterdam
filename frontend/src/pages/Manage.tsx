@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import {
   Button,
   Divider,
@@ -8,25 +9,39 @@ import {
   LinkOverlay,
   List,
   ListItem,
+  Skeleton,
   Spacer,
   Text,
 } from "@chakra-ui/react";
+import { useBlockNumber, useEthers, useCall } from "@usedapp/core";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-const portfolios = [
-  {
-    name: "Super name",
-    owner: "The dude",
-    value: "12",
-  },
-  {
-    name: "Cool name",
-    owner: "Other dude",
-    value: "10",
-  },
-];
+import { Contract, utils } from "ethers";
 
 export const Manage = () => {
+  const { account } = useEthers();
+  const blockNumber = useBlockNumber();
+  const { data, loading, refetch } = useQuery(
+    gql`
+      query getVaultsByOwner($owner: String!) {
+        vaults(where: { owner: $owner }) {
+          id
+          owner
+          asset {
+            id
+          }
+          name
+          symbol
+        }
+      }
+    `,
+    { skip: !account, variables: { owner: account?.toLowerCase() } }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [blockNumber, refetch]);
+
   return (
     <>
       <Flex>
@@ -42,9 +57,12 @@ export const Manage = () => {
         </LinkBox>
       </Flex>
       <List spacing="16px" mt="32px">
-        {portfolios.map((portfolio) => (
+        {loading &&
+          [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
+
+        {data?.vaults?.map((vault: any) => (
           <ListItem>
-            <Portfolio portfolio={portfolio} />
+            <Portfolio vault={vault} />
           </ListItem>
         ))}
       </List>
@@ -53,16 +71,36 @@ export const Manage = () => {
 };
 
 interface PortfolioProps {
-  portfolio: typeof portfolios[number];
+  vault: any;
 }
 
-const Portfolio = ({ portfolio }: PortfolioProps) => {
-  const { name, value } = portfolio;
+const Portfolio = ({ vault }: PortfolioProps) => {
+  const { name, id } = vault;
+
+  const contract = new Contract(
+    id,
+    new utils.Interface([
+      "function totalAssets() public view returns (uint256)",
+      "function deposit(uint256 amount, address receiver) external override returns (uint256 shares)",
+    ])
+  );
+
+  const { value } =
+    useCall({
+      contract: contract,
+      args: [],
+      method: "totalAssets",
+    }) ?? {};
+
   return (
     <Grid templateColumns="1fr 24px 1fr 24px 1fr" w="full" alignItems="center">
       <Text flex="1">{name}</Text>
       <Divider />
-      <Text>{value}M TVL</Text>
+      {value?.[0] ? (
+        <Text>{utils.formatEther(value[0]).toString()} TVL</Text>
+      ) : (
+        <Skeleton height="20px" />
+      )}
       <Spacer />
       <Button>Manage</Button>
     </Grid>
