@@ -25,10 +25,13 @@ import {
   NumberInput,
   NumberInputField,
   Spacer,
+  Skeleton,
 } from "@chakra-ui/react";
+import { useCall } from "@usedapp/core";
+import { Contract, utils } from "ethers";
 
 export const Earn = () => {
-  const { data } = useQuery(gql`
+  const { data, loading } = useQuery(gql`
     query getVaults {
       vaults {
         id
@@ -48,6 +51,9 @@ export const Earn = () => {
         Available portfolios
       </Heading>
       <List spacing="16px" mt="32px">
+        {loading &&
+          [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
+
         {data?.vaults?.map((vault: any) => (
           <ListItem key={vault.id}>
             <Portfolio vault={vault} />
@@ -63,7 +69,21 @@ interface PortfolioProps {
 }
 
 const Portfolio = ({ vault }: PortfolioProps) => {
-  const { name, owner } = vault;
+  const { name, owner, id } = vault;
+  const contract = new Contract(
+    id,
+    new utils.Interface([
+      "function totalAssets() public view returns (uint256)",
+    ])
+  );
+
+  const { value } =
+    useCall({
+      contract: contract,
+      args: [],
+      method: "totalAssets",
+    }) ?? {};
+
   return (
     <Accordion allowToggle>
       <AccordionItem>
@@ -76,7 +96,11 @@ const Portfolio = ({ vault }: PortfolioProps) => {
             <Text flex="1">{name}</Text>
             <Divider color="white" /> <Text>{owner}</Text>
             <Divider />
-            <Text>12M TVL</Text>
+            {value?.[0] ? (
+              <Text>{value[0].toString()} TVL</Text>
+            ) : (
+              <Skeleton height="20px" />
+            )}
             <AccordionIcon />
           </Grid>
         </AccordionButton>
