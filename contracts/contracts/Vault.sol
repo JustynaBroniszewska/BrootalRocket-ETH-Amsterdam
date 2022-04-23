@@ -27,21 +27,28 @@ contract Vault is ERC20, IERC4626 {
         shares = previewDeposit(amount);
         _mint(receiver, shares);
         asset.transferFrom(msg.sender, address(this), amount);
-        emit Deposit(msg.sender, receiver, amount, amount);
+        emit Deposit(msg.sender, receiver, amount, shares);
     }
 
     function withdraw(uint256 assets, address receiver, address _owner) external override returns (uint256 shares) {
         shares = previewWithdraw(assets);
-        emit Withdraw(msg.sender, receiver, _owner, assets, assets);
+        _burn(receiver, shares);
+        asset.transfer(receiver, assets);
+        emit Withdraw(msg.sender, receiver, _owner, assets, shares);
     }
 
     function redeem(uint256 shares, address receiver, address _owner) external override returns (uint256 assets) {
         assets = previewRedeem(shares);
-        emit Withdraw(msg.sender, receiver, _owner, assets, assets);
+        _burn(receiver, shares);
+        asset.transfer(receiver, assets);
+        emit Withdraw(msg.sender, receiver, _owner, assets, shares);
     }
 
     function mint(uint256 shares, address receiver) external override returns (uint256 assets) {
         assets = previewMint(shares);
+        _mint(receiver, shares);
+        asset.transferFrom(msg.sender, address(this), assets);
+        emit Deposit(msg.sender, receiver, assets, shares);
     }
 
     function previewDeposit(uint256 assets) public override view returns (uint256 shares) {
@@ -49,15 +56,15 @@ contract Vault is ERC20, IERC4626 {
     }
 
     function previewMint(uint256 shares) public override view returns (uint256 assets) {
-        assets = shares;
+        assets = convertToAssets(shares);
     }
 
     function previewWithdraw(uint256 assets) public override view returns (uint256 shares) {
-        shares = assets;
+        shares = convertToShares(assets);
     }
 
     function previewRedeem(uint256 shares) public override view returns (uint256 assets) {
-        assets = shares;
+        assets = convertToAssets(shares);
     }
 
     function convertToShares(uint256 assets) public view override returns (uint256 shares) {
@@ -68,23 +75,27 @@ contract Vault is ERC20, IERC4626 {
         }
     }
 
-    function convertToAssets(uint256 shares) public view override returns (uint256) {
-        return shares;
+    function convertToAssets(uint256 shares) public view override returns (uint256 assets) {
+        if (totalSupply() == 0) {
+            assets = 0;
+        } else {
+            assets = shares * totalAssets() / totalSupply();
+        }
     }
 
-    function maxMint(address receiver) external view returns (uint256 maxShares) {
+    function maxMint(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
 
-    function maxRedeem(address receiver) external view returns (uint256 maxShares) {
+    function maxRedeem(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
 
-    function maxWithdraw(address receiver) external view returns (uint256 maxShares) {
+    function maxWithdraw(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
     
-    function maxDeposit(address receiver) external view returns (uint256 maxShares) {
+    function maxDeposit(address) external view returns (uint256 maxShares) {
         return type(uint256).max;
     }
 
