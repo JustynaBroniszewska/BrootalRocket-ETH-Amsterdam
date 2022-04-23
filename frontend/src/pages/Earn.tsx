@@ -27,11 +27,20 @@ import {
   Spacer,
   Skeleton,
 } from "@chakra-ui/react";
-import { useCall } from "@usedapp/core";
-import { Contract, utils } from "ethers";
+import {
+  useBlockNumber,
+  useCall,
+  useContractFunction,
+  useEthers,
+  useTokenAllowance,
+} from "@usedapp/core";
+import { Contract, utils, constants } from "ethers";
+import { useEffect, useState } from "react";
+import { ASSETS } from "./Create";
 
 export const Earn = () => {
-  const { data, loading } = useQuery(gql`
+  const blockNumber = useBlockNumber();
+  const { data, loading, refetch } = useQuery(gql`
     query getVaults {
       vaults {
         id
@@ -44,6 +53,10 @@ export const Earn = () => {
       }
     }
   `);
+
+  useEffect(() => {
+    refetch();
+  }, [blockNumber, refetch]);
 
   return (
     <>
@@ -74,8 +87,10 @@ const Portfolio = ({ vault }: PortfolioProps) => {
     id,
     new utils.Interface([
       "function totalAssets() public view returns (uint256)",
+      "function deposit(uint256 amount, address receiver) external override returns (uint256 shares)",
     ])
   );
+  const { send: deposit } = useContractFunction(contract, "deposit");
 
   const { value } =
     useCall({
@@ -97,7 +112,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
             <Divider color="white" /> <Text>{owner}</Text>
             <Divider />
             {value?.[0] ? (
-              <Text>{value[0].toString()} TVL</Text>
+              <Text>{utils.formatEther(value[0]).toString()} TVL</Text>
             ) : (
               <Skeleton height="20px" />
             )}
@@ -120,10 +135,18 @@ const Portfolio = ({ vault }: PortfolioProps) => {
 
             <TabPanels>
               <TabPanel>
-                <ActionForm actionName="Withdraw" />
+                <ActionForm
+                  actionName="Withdraw"
+                  onSubmit={() => console.log("Not implemented yet")}
+                  vaultAddress={id}
+                />
               </TabPanel>
               <TabPanel>
-                <ActionForm actionName="Deposit" />
+                <ActionForm
+                  actionName="Deposit"
+                  onSubmit={deposit}
+                  vaultAddress={id}
+                />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -135,21 +158,59 @@ const Portfolio = ({ vault }: PortfolioProps) => {
 
 interface ActionFormProps {
   actionName: string;
+  onSubmit: (...args: any[]) => void;
+  vaultAddress: string;
 }
 
-const ActionForm = ({ actionName }: ActionFormProps) => {
+const ActionForm = ({
+  actionName,
+  onSubmit,
+  vaultAddress,
+}: ActionFormProps) => {
+  const { account } = useEthers();
+  const [amount, setAmount] = useState(0);
+  const allowance = useTokenAllowance(ASSETS[0].address, account, vaultAddress);
+  const needsApprove =
+    allowance?.lt(utils.parseEther(amount.toString())) ?? false;
+
+  const { send } = useContractFunction(
+    new Contract(
+      ASSETS[0].address,
+      new utils.Interface(["function approve(address, uint256) public"])
+    ),
+    "approve"
+  );
+
   return (
-    <form>
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+
+        if (needsApprove) {
+          await send(vaultAddress, utils.parseEther(amount.toString()));
+        } else {
+          const target = e.target as any;
+          const amount = +target.amount.value;
+          await onSubmit(utils.parseEther(amount.toString()), account);
+        }
+      }}
+    >
       <FormControl>
         <FormLabel htmlFor="amount">Amount</FormLabel>
         <Flex gap="4">
-          <NumberInput id="amount" w="full" maxW="md" precision={2}>
+          <NumberInput
+            id="amount"
+            w="full"
+            maxW="md"
+            precision={2}
+            onChange={(_, number) => setAmount(number ?? 0)}
+          >
             <NumberInputField />
           </NumberInput>
           <Button>Max</Button>
           <Spacer />
           <Button type="submit" colorScheme="blue" w="36">
-            {actionName}
+            {needsApprove ? "Approve" : actionName}
           </Button>
         </Flex>
       </FormControl>

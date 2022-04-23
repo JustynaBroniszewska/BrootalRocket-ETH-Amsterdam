@@ -1,3 +1,3 @@
-import { Optimism, Polygon } from "@usedapp/core";
+import { OptimismKovan, Polygon } from "@usedapp/core";
 
-export const SUPPORTED_NETWORKS = [Optimism, Polygon];
+export const SUPPORTED_NETWORKS = [OptimismKovan, Polygon];

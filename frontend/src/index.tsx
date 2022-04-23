@@ -3,7 +3,13 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Config, DAppProvider, Mainnet, OptimismKovan } from "@usedapp/core";
+import {
+  Config,
+  DAppProvider,
+  Mainnet,
+  OptimismKovan,
+  Polygon,
+} from "@usedapp/core";
 import { getDefaultProvider } from "ethers";
 import { WalletProvider } from "./providers/WalletProvider";
 import { ChakraProvider } from "@chakra-ui/provider";
@@ -11,10 +17,11 @@ import { theme } from "./theme";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const config: Config = {
-  readOnlyChainId: OptimismKovan.chainId,
+  readOnlyChainId: Polygon.chainId,
   readOnlyUrls: {
     [Mainnet.chainId]: getDefaultProvider("mainnet"),
     [OptimismKovan.chainId]: "https://kovan.optimism.io",
+    [Polygon.chainId]: "https://rpc-mainnet.matic.network",
   },
 };
 
