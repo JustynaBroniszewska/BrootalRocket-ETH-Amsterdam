@@ -1,41 +1,22 @@
-import logo from "./logo.svg";
-import "./App.css";
-
-import { useEthers } from "@usedapp/core";
-import { useWallet } from "./providers/WalletProvider";
-import { Button } from "@chakra-ui/react";
-import { WalletModal } from "./components/WalletModal";
+import { Layout } from "./components/Layout";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { Earn } from "./pages/Earn";
+import { Manage } from "./pages/Manage";
+import { Create } from "./pages/Create";
 
 function App() {
-  const { deactivateWallet } = useWallet();
-  const { account } = useEthers();
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>{account}</p>
-
-        {account ? (
-          <Button colorScheme="gray" onClick={deactivateWallet}>
-            Disconnect wallet
-          </Button>
-        ) : (
-          <WalletModal />
-        )}
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/earn" element={<Earn />} />
+          <Route path="/manage" element={<Manage />} />
+          <Route path="/create" element={<Create />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 
