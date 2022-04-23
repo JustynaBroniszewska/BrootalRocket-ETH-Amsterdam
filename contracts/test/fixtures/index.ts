@@ -1,0 +1,1 @@
+export { vaultFixture } from './vaultFixture'
