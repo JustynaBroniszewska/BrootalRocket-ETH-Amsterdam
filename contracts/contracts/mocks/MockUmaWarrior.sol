@@ -10,13 +10,13 @@ contract MockUmaWarrior {
 
     function setCustomLiveness(bytes32, uint256, bytes memory, uint256) public {}
 
-    function proposePrice(address, bytes32, uint256, bytes memory, uint256);
+    function proposePrice(address, bytes32, uint256, bytes memory, uint256) public {}
 
     function settleAndGetPrice(bytes32, uint256, bytes memory) public returns(uint256){
         return price;
     }
 
-    function setPrice(uint256 newPrice) {
+    function setPrice(uint256 newPrice) public {
         price = newPrice;
     }
 }
