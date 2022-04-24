@@ -116,7 +116,7 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
         colorScheme="whiteAlpha"
         border="2px"
         borderColor="blue.100"
-        leftIcon={<Image h="32px" src="/yearn-logo.jpeg" />}
+        leftIcon={<Image h="32px" src="/1inch-logo.png" />}
       />
     </VStack>
   );
