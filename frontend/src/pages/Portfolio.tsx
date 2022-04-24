@@ -32,8 +32,8 @@ export const Portfolio = () => {
   const address = useParams().address ?? "";
   const { account } = useEthers();
   const blockNumber = useBlockNumber();
-  const daiBalance = useTokenBalance(ASSETS[0].address, address)
-  const aDaiBalance = useTokenBalance(aDAI, address)
+  const daiBalance = useTokenBalance(ASSETS[0].address, address);
+  const aDaiBalance = useTokenBalance(aDAI, address);
   const { data, refetch } = useQuery(
     gql`
       query getVaultsById($id: String!) {
@@ -76,11 +76,11 @@ export const Portfolio = () => {
       <Text>{data?.vault?.id}</Text>
       <Text>{description}</Text>
 
-      <div>
-        <h1>Portfolio value:</h1>
-        DAI: {daiBalance && utils.formatEther(daiBalance)}
-        aDAI: {aDaiBalance && utils.formatEther(aDaiBalance)}
-      </div>
+      <Box mt="3">
+        <Text>Portfolio value:</Text>
+        <Text>DAI: {daiBalance && utils.formatEther(daiBalance)}</Text>
+        <Text>aDAI: {aDaiBalance && utils.formatEther(aDaiBalance)}</Text>
+      </Box>
       <ManageModal portfolioAddress={data?.vault?.id} />
     </div>
   );
