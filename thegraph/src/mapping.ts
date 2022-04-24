@@ -20,6 +20,7 @@ export function handleVaultCreated(event: VaultCreated): void {
   const entity = new Vault(event.params.vault.toHexString());
   entity.asset = getAsset(event.params.asset).id;
   entity.owner = event.params.owner;
+  entity.startDate = event.block.timestamp;
 
   const ercContract = ERC20.bind(event.params.vault);
   entity.name = ercContract.name();

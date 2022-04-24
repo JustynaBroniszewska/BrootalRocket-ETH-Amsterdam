@@ -30,7 +30,11 @@ export const Manage = () => {
   const { data, loading, refetch } = useQuery(
     gql`
       query getVaultsByOwner($owner: String!) {
-        vaults(where: { owner: $owner }) {
+        vaults(
+          where: { owner: $owner }
+          orderBy: startDate
+          orderDirection: desc
+        ) {
           id
           owner
           asset {

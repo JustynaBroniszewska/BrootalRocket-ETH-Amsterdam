@@ -43,7 +43,7 @@ export const Earn = () => {
   const blockNumber = useBlockNumber();
   const { data, loading, refetch } = useQuery(gql`
     query getVaults {
-      vaults {
+      vaults(orderBy: startDate, orderDirection: desc) {
         id
         owner
         asset {
@@ -134,7 +134,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
                 <Tab borderRadius="md">Deposit</Tab>
               </TabList>
               <LinkBox as={Button}>
-                <LinkOverlay href="#" display="block" isExternal>
+                <LinkOverlay as={Link} to={`/portfolio/${id}`} display="block">
                   Learn more
                 </LinkOverlay>
               </LinkBox>
