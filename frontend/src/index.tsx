@@ -12,6 +12,7 @@ import {
 } from "@usedapp/core";
 import { getDefaultProvider } from "ethers";
 import { WalletProvider } from "./providers/WalletProvider";
+import { SiweProvider } from "./providers/SiweProvider";
 import { ChakraProvider } from "@chakra-ui/provider";
 import { theme } from "./theme";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
@@ -35,9 +36,11 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <DAppProvider config={config}>
         <WalletProvider>
-          <ChakraProvider theme={theme}>
-            <App />
-          </ChakraProvider>
+          <SiweProvider>
+            <ChakraProvider theme={theme}>
+              <App />
+            </ChakraProvider>
+          </SiweProvider>
         </WalletProvider>
       </DAppProvider>
     </ApolloProvider>

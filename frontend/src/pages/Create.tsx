@@ -16,6 +16,7 @@ import { Contract, utils } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
+import { useSiweProvider } from "../providers/SiweProvider";
 
 export const ASSETS = [
   {
@@ -26,6 +27,7 @@ export const ASSETS = [
 
 export const Create = () => {
   const { switchNetwork, account } = useEthers();
+  const { signIn } = useSiweProvider();
   const navigate = useNavigate();
   const { send, state } = useContractFunction(
     new Contract(
@@ -56,18 +58,24 @@ export const Create = () => {
           const target = e.target as any;
 
           const targetChainId = +target.network.value;
-          console.log({ targetChainId });
           switchNetwork(targetChainId);
           const asset = target.asset.value;
           const portfolioName = target.name.value;
           const symbol = target.symbol.value;
           const description = target.description.value;
 
-          await axios.post("http://localhost:3001/portfolio", {
-            account,
-            portfolioName,
-            description,
-          });
+          await signIn();
+          const token = localStorage.getItem("authToken");
+
+          await axios.post(
+            "http://localhost:3001/portfolio",
+            {
+              account,
+              portfolioName,
+              description,
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
           await send(asset, portfolioName, symbol);
         }}

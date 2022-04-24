@@ -13,9 +13,14 @@ const portfolio: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     });
   });
 
-  fastify.get("/portfolio/:account/:name", async function (request, reply) {
+  fastify.get("/portfolio/:name", async function (request, reply) {
+    if (!request.siwe.session) {
+      reply.status(401).send();
+      return;
+    }
+
     const req = request as any;
-    return service.getPortfolio(req.params.account, req.params.name);
+    return service.getPortfolio(request.siwe.session?.address, req.params.name);
   });
 
   fastify.get("/portfolio", async function (request, reply) {
