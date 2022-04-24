@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ nezouse/degenheaven"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ nezouse/degenheavenpolygon"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.25.2",

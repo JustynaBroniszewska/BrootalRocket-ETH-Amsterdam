@@ -35,32 +35,91 @@ import {
   useEthers,
   useTokenAllowance,
   shortenIfAddress,
+  Polygon,
+  OptimismKovan,
 } from "@usedapp/core";
 import { Contract, utils } from "ethers";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { OptimismIcon, PolygonIcon } from "../components/PolygonIcon";
 import { ASSETS } from "./Create";
+import { optClient, polyClient } from "..";
 
-export const Earn = () => {
+const usePolygonVaults = () => {
   const blockNumber = useBlockNumber();
-  const { data, loading, refetch } = useQuery(gql`
-    query getVaults {
-      vaults(orderBy: startDate, orderDirection: desc) {
-        id
-        owner
-        asset {
+  const { data, loading, refetch } = useQuery(
+    gql`
+      query getVaults {
+        vaults(orderBy: startDate, orderDirection: desc) {
           id
+          owner
+          asset {
+            id
+          }
+          name
+          symbol
         }
-        name
-        symbol
       }
+    `,
+    {
+      client: polyClient,
     }
-  `);
+  );
 
   useEffect(() => {
     refetch();
   }, [blockNumber, refetch]);
+
+  return [
+    data?.vaults?.map((d: any) => ({
+      ...d,
+      chainId: Polygon.chainId,
+    })) ?? [],
+    loading,
+  ];
+};
+
+const useOptimismVaults = () => {
+  const blockNumber = useBlockNumber();
+  const { data, loading, refetch } = useQuery(
+    gql`
+      query getVaults {
+        vaults(orderBy: startDate, orderDirection: desc) {
+          id
+          owner
+          asset {
+            id
+          }
+          name
+          symbol
+        }
+      }
+    `,
+    {
+      client: optClient,
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [blockNumber, refetch]);
+
+  return [
+    data?.vaults?.map((d: any) => ({
+      ...d,
+      chainId: OptimismKovan.chainId,
+    })) ?? [],
+    loading,
+  ];
+};
+
+export const Earn = () => {
+  const [optData, l1] = useOptimismVaults();
+
+  const [polData, l2] = usePolygonVaults();
+  const loading = l1 || l2;
+
+  const data = [...optData, ...polData];
 
   return (
     <>
@@ -72,7 +131,7 @@ export const Earn = () => {
           loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
 
-        {data?.vaults?.map((vault: any) => (
+        {data?.map((vault: any) => (
           <ListItem key={vault.id}>
             <Portfolio vault={vault} />
           </ListItem>
@@ -92,7 +151,7 @@ interface PortfolioProps {
 }
 
 const Portfolio = ({ vault }: PortfolioProps) => {
-  const { name, owner, id } = vault;
+  const { name, owner, id, chainId } = vault;
   const contract = new Contract(
     id,
     new utils.Interface([
@@ -108,11 +167,14 @@ const Portfolio = ({ vault }: PortfolioProps) => {
   );
 
   const { value } =
-    useCall({
-      contract: contract,
-      args: [],
-      method: "totalAssets",
-    }) ?? {};
+    useCall(
+      {
+        contract: contract,
+        args: [],
+        method: "totalAssets",
+      },
+      { chainId }
+    ) ?? {};
 
   return (
     <Accordion allowToggle>
@@ -123,7 +185,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
             w="full"
             alignItems="center"
           >
-            <OptimismIcon />
+            {chainId === Polygon.chainId ? <PolygonIcon /> : <OptimismIcon />}
             <Text>{name}</Text>
             <Divider color="white" /> <Text>{shortenIfAddress(owner)}</Text>
             <Divider />
@@ -143,7 +205,11 @@ const Portfolio = ({ vault }: PortfolioProps) => {
                 <Tab borderRadius="md">Deposit</Tab>
               </TabList>
               <LinkBox as={Button}>
-                <LinkOverlay as={Link} to={`/portfolio/${id}`} display="block">
+                <LinkOverlay
+                  as={Link}
+                  to={`/portfolio/${chainId}/${id}`}
+                  display="block"
+                >
                   Learn more
                 </LinkOverlay>
               </LinkBox>

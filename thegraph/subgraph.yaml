@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: VaultFactory
-    network: optimism-kovan
+    network: matic
     source:
-      address: "0x4C22b9D0687EA4f2f19a97BceeE017841086064d"
+      address: "0x2Fc606CF59062AF9CfD24007f46287e42ce0C79C"
       abi: VaultFactory
-      startBlock: 2241577
+      startBlock: 27504985
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

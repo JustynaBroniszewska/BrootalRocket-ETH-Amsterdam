@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import {
+  Polygon,
   useBlockNumber,
   useContractFunction,
   useEthers,
@@ -23,6 +24,7 @@ import { Contract, utils } from "ethers";
 import { ASSETS } from "./Create";
 import axios from "axios";
 import { aDAI } from "../addresses";
+import { optClient, polyClient, Subgraphs } from "..";
 
 const AAVE_INTERFACE = new utils.Interface([
   "function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) public",
@@ -30,6 +32,7 @@ const AAVE_INTERFACE = new utils.Interface([
 
 export const Portfolio = () => {
   const address = useParams().address ?? "";
+  const chainId = Number(useParams().chainId ?? 0);
   const { account } = useEthers();
   const blockNumber = useBlockNumber();
   const daiBalance = useTokenBalance(ASSETS[0].address, address);
@@ -48,7 +51,10 @@ export const Portfolio = () => {
         }
       }
     `,
-    { variables: { id: address.toLowerCase() } }
+    {
+      variables: { id: address.toLowerCase() },
+      client: chainId === Polygon.chainId ? polyClient : optClient,
+    }
   );
 
   useEffect(() => {

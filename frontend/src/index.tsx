@@ -15,7 +15,13 @@ import { WalletProvider } from "./providers/WalletProvider";
 import { SiweProvider } from "./providers/SiweProvider";
 import { ChakraProvider } from "@chakra-ui/provider";
 import { theme } from "./theme";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+} from "@apollo/client";
 
 const config: Config = {
   readOnlyChainId: Polygon.chainId,
@@ -26,8 +32,37 @@ const config: Config = {
   },
 };
 
+export enum Subgraphs {
+  Optimism,
+  Polygon,
+}
+
+const SUBGRAPH_URLS = {
+  [Subgraphs.Optimism]:
+    "https://api.thegraph.com/subgraphs/name/nezouse/degenheaven",
+  [Subgraphs.Polygon]:
+    "https://api.thegraph.com/subgraphs/name/nezouse/degenheavenpolygon",
+} as const;
+
+const getApolloLink = new ApolloLink((operation) => {
+  const subgraph = operation.getContext().subgraph as Subgraphs;
+  const uri = SUBGRAPH_URLS[subgraph];
+  const link = new HttpLink({ uri, fetch });
+  return link.request(operation);
+});
+
 const client = new ApolloClient({
+  link: getApolloLink,
+  cache: new InMemoryCache(),
+});
+
+export const optClient = new ApolloClient({
   uri: "https://api.thegraph.com/subgraphs/name/nezouse/degenheaven",
+  cache: new InMemoryCache(),
+});
+
+export const polyClient = new ApolloClient({
+  uri: "https://api.thegraph.com/subgraphs/name/nezouse/degenheavenpolygon",
   cache: new InMemoryCache(),
 });
 

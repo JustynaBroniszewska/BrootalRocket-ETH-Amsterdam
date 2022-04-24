@@ -13,29 +13,26 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { useBlockNumber, useEthers, useCall } from "@usedapp/core";
+import {
+  useBlockNumber,
+  useEthers,
+  useCall,
+  OptimismKovan,
+  Polygon,
+} from "@usedapp/core";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Contract, utils } from "ethers";
 import { PolygonIcon, OptimismIcon } from "../components/PolygonIcon";
+import { optClient, polyClient, Subgraphs } from "..";
 
-const PrimaryButton = ({ children }: any) => (
-  <Button colorScheme="blue" w="240px">
-    {children}
-  </Button>
-);
-
-export const Manage = () => {
+const usePolygonVaults = () => {
   const { account } = useEthers();
   const blockNumber = useBlockNumber();
   const { data, loading, refetch } = useQuery(
     gql`
-      query getVaultsByOwner($owner: String!) {
-        vaults(
-          where: { owner: $owner }
-          orderBy: startDate
-          orderDirection: desc
-        ) {
+      query getVaults {
+        vaults(orderBy: startDate, orderDirection: desc) {
           id
           owner
           asset {
@@ -46,12 +43,77 @@ export const Manage = () => {
         }
       }
     `,
-    { skip: !account, variables: { owner: account?.toLowerCase() } }
+    {
+      skip: !account,
+      variables: { owner: account?.toLowerCase() },
+      client: polyClient,
+    }
   );
 
   useEffect(() => {
     refetch();
   }, [blockNumber, refetch]);
+
+  return [
+    data?.vaults?.map((d: any) => ({
+      ...d,
+      chainId: Polygon.chainId,
+    })) ?? [],
+    loading,
+  ];
+};
+
+const useOptimismVaults = () => {
+  const { account } = useEthers();
+  const blockNumber = useBlockNumber();
+  const { data, loading, refetch } = useQuery(
+    gql`
+      query getVaults {
+        vaults(orderBy: startDate, orderDirection: desc) {
+          id
+          owner
+          asset {
+            id
+          }
+          name
+          symbol
+        }
+      }
+    `,
+    {
+      skip: !account,
+      variables: { owner: account?.toLowerCase() },
+      client: optClient,
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [blockNumber, refetch]);
+
+  return [
+    data?.vaults?.map((d: any) => ({
+      ...d,
+      chainId: OptimismKovan.chainId,
+    })) ?? [],
+    loading,
+  ];
+};
+
+const PrimaryButton = ({ children }: any) => (
+  <Button colorScheme="blue" w="240px">
+    {children}
+  </Button>
+);
+
+export const Manage = () => {
+  const { account } = useEthers();
+  const [optData, l1] = useOptimismVaults();
+
+  const [polData, l2] = usePolygonVaults();
+  const loading = l1 || l2;
+
+  const data = [...optData, ...polData];
 
   return (
     <>
@@ -72,7 +134,7 @@ export const Manage = () => {
           loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
 
-        {data?.vaults?.map((vault: any) => (
+        {data?.map((vault: any) => (
           <ListItem>
             <Portfolio vault={vault} />
           </ListItem>
@@ -92,7 +154,7 @@ interface PortfolioProps {
 }
 
 const Portfolio = ({ vault }: PortfolioProps) => {
-  const { name, id } = vault;
+  const { name, id, chainId } = vault;
 
   const contract = new Contract(
     id,
@@ -103,11 +165,14 @@ const Portfolio = ({ vault }: PortfolioProps) => {
   );
 
   const { value } =
-    useCall({
-      contract: contract,
-      args: [],
-      method: "totalAssets",
-    }) ?? {};
+    useCall(
+      {
+        contract: contract,
+        args: [],
+        method: "totalAssets",
+      },
+      { chainId }
+    ) ?? {};
 
   return (
     <Grid
@@ -115,7 +180,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
       w="full"
       alignItems="center"
     >
-      <OptimismIcon />
+      {chainId === Polygon.chainId ? <PolygonIcon /> : <OptimismIcon />}
       <Text>{name}</Text>
       <Divider />
       {value?.[0] ? (
@@ -126,7 +191,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
       <Spacer />
 
       <LinkBox as={Button}>
-        <LinkOverlay href={`/portfolio/${id}`} display="block">
+        <LinkOverlay href={`/portfolio/${chainId}/${id}`} display="block">
           Manage
         </LinkOverlay>
       </LinkBox>

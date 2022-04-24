@@ -15,7 +15,7 @@ function App() {
           <Route path="/earn" element={<Earn />} />
           <Route path="/manage" element={<Manage />} />
           <Route path="/create" element={<Create />} />
-          <Route path="/portfolio/:address" element={<Portfolio/>} />
+          <Route path="/portfolio/:chainId/:address" element={<Portfolio />} />
         </Routes>
       </Layout>
     </BrowserRouter>
