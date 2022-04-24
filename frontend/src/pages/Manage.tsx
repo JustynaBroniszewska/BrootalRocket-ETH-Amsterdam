@@ -17,6 +17,7 @@ import { useBlockNumber, useEthers, useCall } from "@usedapp/core";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Contract, utils } from "ethers";
+import { PolygonIcon, OptimismIcon } from "../components/PolygonIcon";
 
 const PrimaryButton = ({ children }: any) => (
   <Button colorScheme="blue" w="240px">
@@ -109,8 +110,13 @@ const Portfolio = ({ vault }: PortfolioProps) => {
     }) ?? {};
 
   return (
-    <Grid templateColumns="1fr 24px 1fr 24px 1fr" w="full" alignItems="center">
-      <Text flex="1">{name}</Text>
+    <Grid
+      templateColumns="32px 1fr 24px 1fr 24px 240px"
+      w="full"
+      alignItems="center"
+    >
+      <OptimismIcon />
+      <Text>{name}</Text>
       <Divider />
       {value?.[0] ? (
         <Text>{utils.formatEther(value[0]).toString()} TVL</Text>

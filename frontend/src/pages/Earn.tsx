@@ -33,10 +33,12 @@ import {
   useContractFunction,
   useEthers,
   useTokenAllowance,
+  shortenIfAddress,
 } from "@usedapp/core";
 import { Contract, utils } from "ethers";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { OptimismIcon, PolygonIcon } from "../components/PolygonIcon";
 import { ASSETS } from "./Create";
 
 export const Earn = () => {
@@ -64,7 +66,7 @@ export const Earn = () => {
       <Heading as="h3" size="lg">
         Available portfolios
       </Heading>
-      <List spacing="16px" mt="32px">
+      <List spacing="16px" mt="32px" w="full">
         {!data &&
           loading &&
           [1, 2, 3, 4, 5].map((_, i) => <Skeleton key={i} height="20px" />)}
@@ -111,12 +113,13 @@ const Portfolio = ({ vault }: PortfolioProps) => {
       <AccordionItem>
         <AccordionButton>
           <Grid
-            templateColumns="1fr 24px 1fr 24px 1fr 24px"
+            templateColumns="24px 1fr 24px 1fr 24px 1fr 24px"
             w="full"
             alignItems="center"
           >
-            <Text flex="1">{name}</Text>
-            <Divider color="white" /> <Text>{owner}</Text>
+            <OptimismIcon />
+            <Text>{name}</Text>
+            <Divider color="white" /> <Text>{shortenIfAddress(owner)}</Text>
             <Divider />
             {value?.[0] ? (
               <Text>{utils.formatEther(value[0]).toString()} TVL</Text>
