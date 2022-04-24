@@ -5,6 +5,7 @@ type Vault @entity {
   name: String!
   symbol: String!
   decimals: Int!
+  startDate: BigInt!
 }
 
 type Asset @entity {

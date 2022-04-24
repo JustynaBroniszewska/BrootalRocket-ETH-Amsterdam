@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { Flex, Button, Box, Heading } from "@chakra-ui/react";
-import { useEthers } from "@usedapp/core";
+import { Flex, Button, Box, Heading, Text } from "@chakra-ui/react";
+import { useEthers, shortenIfAddress } from "@usedapp/core";
 import { WalletMenu } from "./WalletMenu";
 import { useWallet } from "../providers/WalletProvider";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const { account } = useEthers();
+  const { account, chainId } = useEthers();
   const { deactivateWallet } = useWallet();
 
   return (
@@ -22,9 +22,13 @@ export const Layout = ({ children }: LayoutProps) => {
         </StyleLink>
 
         {account ? (
-          <Button colorScheme="gray" onClick={deactivateWallet}>
-            Disconnect wallet
-          </Button>
+          <Flex align="baseline" gap="4">
+            <Text>{chainId === 69 ? "[ Optimism ]" : "[ Polygon ]"}</Text>
+            <Text>{shortenIfAddress(account)}</Text>
+            <Button colorScheme="gray" onClick={deactivateWallet}>
+              Disconnect wallet
+            </Button>
+          </Flex>
         ) : (
           <WalletMenu />
         )}

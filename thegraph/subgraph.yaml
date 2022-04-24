@@ -6,7 +6,7 @@ dataSources:
     name: VaultFactory
     network: optimism-kovan
     source:
-      address: "0xDfB4F647fB6059c1E37E56C485d6bF585B8be44b"
+      address: "0x4C22b9D0687EA4f2f19a97BceeE017841086064d"
       abi: VaultFactory
       startBlock: 2241577
     mapping:

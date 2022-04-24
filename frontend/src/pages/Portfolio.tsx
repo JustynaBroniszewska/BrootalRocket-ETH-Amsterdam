@@ -16,6 +16,7 @@ import {
   Select,
   Input,
   Image,
+  Text,
 } from "@chakra-ui/react";
 import { Contract, utils } from "ethers";
 import { ASSETS } from "./Create";
@@ -67,11 +68,10 @@ export const Portfolio = () => {
 
   return (
     <div>
-      {data?.vault?.name}
-      <br />
-      {data?.vault?.id}
-      <br />
-      {description}
+      <Text>{data?.vault?.name}</Text>
+      <Text>{data?.vault?.id}</Text>
+      <Text>{description}</Text>
+
       <ManageModal portfolioAddress={data?.vault?.id} />
     </div>
   );
@@ -84,9 +84,9 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
   }
 
   return (
-    <VStack>
+    <VStack spacing="3" mt="4">
       <Box>Available protocols:</Box>
-      <br />
+
       <Button
         w="150px"
         colorScheme="whiteAlpha"
@@ -95,7 +95,6 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
         onClick={() => setState("aave")}
         leftIcon={<Image h="56px" src="/aave-logo.png" />}
       />
-      <br />
       <Button
         w="150px"
         colorScheme="whiteAlpha"
@@ -103,7 +102,6 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
         borderColor="blue.100"
         leftIcon={<Image h="32px" src="/apwine-logo.png" />}
       />
-      <br />
       <Button
         w="150px"
         colorScheme="whiteAlpha"
@@ -136,6 +134,7 @@ const ManageAave = ({ portfolioAddress }: { portfolioAddress: string }) => {
       as="form"
       maxW="sm"
       mt="4"
+      spacing="3"
       onSubmit={async (e) => {
         e.preventDefault();
         if (needsApprove) {
@@ -159,20 +158,23 @@ const ManageAave = ({ portfolioAddress }: { portfolioAddress: string }) => {
     >
       <FormControl>
         <FormLabel htmlFor="network">Network:</FormLabel>
-        <Select id="operation">
+        <Select id="network">
           {SUPPORTED_AAVE_OPERATIONS.map((operation) => (
-            <option value={operation}>{operation}</option>
+            <option value={operation}>
+              {operation[0].toUpperCase() + operation.slice(1)}
+            </option>
           ))}
         </Select>
-        <FormControl>
-          <FormLabel htmlFor="amount">Amount:</FormLabel>
-          <Input
-            id="amount"
-            placeholder="Amount"
-            onChange={(e) => setAmount(e.target.value)}
-          ></Input>
-        </FormControl>
       </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="amount">Amount:</FormLabel>
+        <Input
+          id="amount"
+          placeholder="Amount"
+          onChange={(e) => setAmount(e.target.value)}
+        ></Input>
+      </FormControl>
+
       <Button type="submit" w="32">
         {needsApprove ? "Approve" : "Send"}
       </Button>

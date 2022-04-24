@@ -16,14 +16,17 @@ contract VaultValuationModule {
     uint256 lastTotalValue;
     uint256 lastTotalValueTimestamp;
 
+    event ValuationRequested(bytes32 identifier, uint256 timestamp);
+
     constructor(IERC20 _collateralAsset, OptimisticOracleInterface _oracle) {
         collateralAsset = _collateralAsset;
         oracle = _oracle;
     }
 
-    function requestTotalValue() public returns (uint256) {
+    function requestTotalValue(int256 proposedPrice) public returns (uint256) {
         uint256 currentTime = block.timestamp;
-        _requestOraclePrice(currentTime);
+        _requestOraclePrice(currentTime, proposedPrice);
+        emit ValuationRequested(PRICE_IDENTIFIER, currentTime);
         return currentTime;
     }
 
@@ -46,14 +49,15 @@ contract VaultValuationModule {
     /// UMA specific stuff ///
     //////////////////////////
 
-    function _requestOraclePrice(uint256 requestedTime) internal {
+    function _requestOraclePrice(uint256 requestedTime, int256 proposedPrice) internal {
         oracle.requestPrice(PRICE_IDENTIFIER, requestedTime, "", collateralAsset, 0);
         oracle.setCustomLiveness(PRICE_IDENTIFIER, requestedTime, "", REQUEST_LIVENESS);
+        oracle.proposePrice(address(this), PRICE_IDENTIFIER, requestedTime, "", proposedPrice);
     }
 
     function _getOraclePrice(uint256 requestTimestamp) internal returns (uint256) {
         require(
-            oracle.hasPrice(address(this), PRICE_IDENTIFIER, requestTimestamp, ""),
+            hasPrice(requestTimestamp),
             "Unresolved oracle price"
         );
         int256 oraclePrice = oracle.settleAndGetPrice(PRICE_IDENTIFIER, requestTimestamp, "");
@@ -63,4 +67,14 @@ contract VaultValuationModule {
         }
         return uint256(oraclePrice);
     }
+
+    function hasPrice(uint256 requestTimestamp) public view returns (bool){
+        return oracle.hasPrice(address(this), PRICE_IDENTIFIER, requestTimestamp, "");
+    }
+
+    function priceProposed(
+        bytes32,
+        uint256,
+        bytes memory
+    ) external {}
 }
