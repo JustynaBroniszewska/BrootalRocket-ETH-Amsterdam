@@ -20,7 +20,9 @@ const SiweContext = createContext<{
 });
 
 async function getNonce(): Promise<string> {
-  const req = await axios.post("http://localhost:3001/siwe/init");
+  const req = await axios.post(
+    "https://solitary-glitter-2647.fly.dev/siwe/init"
+  );
   return req.data.nonce;
 }
 
@@ -29,7 +31,7 @@ async function checkAuthStatus(): Promise<{
 }> {
   const token = localStorage.getItem("authToken");
 
-  const req = await axios.get("http://localhost:3001/siwe/me", {
+  const req = await axios.get("https://solitary-glitter-2647.fly.dev/siwe/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

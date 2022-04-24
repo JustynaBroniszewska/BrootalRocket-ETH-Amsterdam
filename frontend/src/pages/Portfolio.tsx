@@ -67,7 +67,7 @@ export const Portfolio = () => {
       try {
         const token = localStorage.getItem("authToken");
         const res = await axios.get(
-          `http://localhost:3001/portfolio/${data?.vault?.name}`,
+          `https://solitary-glitter-2647.fly.dev/portfolio/${data?.vault?.name}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setDescription(res.data.description);

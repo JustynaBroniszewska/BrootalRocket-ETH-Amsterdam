@@ -25,8 +25,7 @@ export const ASSETS = [
   },
 ];
 
-
-const COLLATERAL_DAI = '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1'
+const COLLATERAL_DAI = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
 
 export const Create = () => {
   const { switchNetwork, account } = useEthers();
@@ -71,7 +70,7 @@ export const Create = () => {
           const token = localStorage.getItem("authToken");
 
           await axios.post(
-            "http://localhost:3001/portfolio",
+            "https://solitary-glitter-2647.fly.dev/portfolio",
             {
               account,
               portfolioName,
@@ -80,8 +79,10 @@ export const Create = () => {
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
-          console.log({asset, COLLATERAL_DAI, portfolioName, symbol})
-          await send(asset, COLLATERAL_DAI, portfolioName, symbol, { gasLimit: 3000000 });
+          console.log({ asset, COLLATERAL_DAI, portfolioName, symbol });
+          await send(asset, COLLATERAL_DAI, portfolioName, symbol, {
+            gasLimit: 3000000,
+          });
         }}
       >
         <FormControl>
