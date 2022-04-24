@@ -1,0 +1,1 @@
+export const aDAI = '0x4cdb5D85687Fa162446c7Cf263f9be9614E6314B'

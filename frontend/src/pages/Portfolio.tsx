@@ -5,6 +5,7 @@ import {
   useContractFunction,
   useEthers,
   useTokenAllowance,
+  useTokenBalance,
 } from "@usedapp/core";
 import { useParams } from "react-router-dom";
 import {
@@ -21,6 +22,7 @@ import {
 import { Contract, utils } from "ethers";
 import { ASSETS } from "./Create";
 import axios from "axios";
+import { aDAI } from "../addresses";
 
 const AAVE_INTERFACE = new utils.Interface([
   "function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) public",
@@ -30,6 +32,8 @@ export const Portfolio = () => {
   const address = useParams().address ?? "";
   const { account } = useEthers();
   const blockNumber = useBlockNumber();
+  const daiBalance = useTokenBalance(ASSETS[0].address, address);
+  const aDaiBalance = useTokenBalance(aDAI, address);
   const { data, refetch } = useQuery(
     gql`
       query getVaultsById($id: String!) {
@@ -72,6 +76,11 @@ export const Portfolio = () => {
       <Text>{data?.vault?.id}</Text>
       <Text>{description}</Text>
 
+      <Box mt="3">
+        <Text>Portfolio value:</Text>
+        <Text>DAI: {daiBalance && utils.formatEther(daiBalance)}</Text>
+        <Text>aDAI: {aDaiBalance && utils.formatEther(aDaiBalance)}</Text>
+      </Box>
       <ManageModal portfolioAddress={data?.vault?.id} />
     </div>
   );
