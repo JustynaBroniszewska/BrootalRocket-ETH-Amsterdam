@@ -36,8 +36,8 @@ contract Vault is VaultValuationModule, ERC20, IERC4626 {
         }
     }
 
-    function requestDeposit() external {
-        uint256 timestamp = requestTotalValue();
+    function requestDeposit(int256 proposedVaultValue) external {
+        uint256 timestamp = requestTotalValue(proposedVaultValue);
         depositRequest[msg.sender] = timestamp;
     }
 
@@ -49,8 +49,8 @@ contract Vault is VaultValuationModule, ERC20, IERC4626 {
         emit Deposit(msg.sender, receiver, amount, shares);
     }
 
-    function requestWithdraw() external {
-        uint256 timestamp = requestTotalValue();
+    function requestWithdraw(int256 proposedVaultValue) external {
+        uint256 timestamp = requestTotalValue(proposedVaultValue);
         withdrawRequest[msg.sender] = timestamp;
     }
 
