@@ -4,5 +4,15 @@
       "txHash": "0x7c58374d0ecdcb9bdd0639ebf730a52748585419e26d991addbe37f41c1db3ec",
       "address": "0x171a84a10bB001FC143C50CB2EE02A5bd9AC2D5C"
     }
+  },
+  "matic": {
+    "mockUmaWarrior": {
+      "txHash": "0x835d6c0989d9788996d53aa73aa4f1b2819a51b98a9633a5f069a89a56081c75",
+      "address": "0xDfB4F647fB6059c1E37E56C485d6bF585B8be44b"
+    },
+    "vaultFactory": {
+      "txHash": "0x164fa3149e8c38acc3777ee9de93187038e84bb0aadf74c86bc86af68774a855",
+      "address": "0x2Fc606CF59062AF9CfD24007f46287e42ce0C79C"
+    }
   }
 }

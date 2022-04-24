@@ -11,6 +11,7 @@
     "lint": "yarn run lint:sol && yarn run lint:ts",
     "build": "yarn clean && hardhat compile && bash ./utils/bash/indexBuild.sh",
     "deploy": "yarn mars && yarn ts-node scripts/deploy.ts --network https://kovan.optimism.io -w .waffle.json -o deployments.json -v",
+    "deploy:polygon": "yarn mars && yarn ts-node scripts/polygon.ts --network https://polygon-rpc.com -w .waffle.json -o deployments.json -v",
     "test": "mocha 'test/**/*.test.ts'"
   },
   "devDependencies": {
