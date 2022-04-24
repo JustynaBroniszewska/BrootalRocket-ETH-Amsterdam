@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from 'react'
 import { useBlockNumber, useContractFunction, useEthers, useTokenAllowance } from '@usedapp/core'
 import { useParams } from "react-router-dom";
-import { Button, VStack, Box, FormControl, FormLabel, Select, useTabList, Input } from "@chakra-ui/react";
+import { Button, VStack, Box, FormControl, FormLabel, Select, useTabList, Input, Image } from "@chakra-ui/react";
 import { Contract, utils } from 'ethers'
 import { ASSETS } from "./Create";
 import axios from 'axios'
@@ -70,17 +70,12 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
       Available protocols:
     </Box>
     <br />
-    <Button onClick={() => setState('aave')}>
-      AAVE
-    </Button>
+    <Button w="150px" colorScheme="whiteAlpha"  border="2px" borderColor="blue.100" onClick={() => setState('aave')} leftIcon={<Image h="56px" src="/aave-logo.png"/>}/>
     <br />
-    <Button>
-      APWine
-    </Button>
+    <Button w="150px" colorScheme="whiteAlpha"  border="2px" borderColor="blue.100" leftIcon={<Image h="32px" src="/apwine-logo.png"/>}/>
     <br />
-    <Button>
-      Yearn
-    </Button></VStack>)
+    <Button w="150px" colorScheme="whiteAlpha"  border="2px" borderColor="blue.100" leftIcon={<Image h="32px" src="/yearn-logo.jpeg"/>}/>
+    </VStack>)
 }
 
 const SUPPORTED_AAVE_OPERATIONS = ['deposit', 'borrow', 'withdraw']
@@ -103,7 +98,7 @@ const ManageAave = ({ portfolioAddress }: { portfolioAddress: string }) => {
       if (needsApprove) {
         await send(ASSETS[0].address, tokenInt.encodeFunctionData('approve', [AAVE, utils.parseEther(amount.toString())]))
       } else {
-        const data = AAVE_INTERFACE.encodeFunctionData('supply', [ASSETS[0].address, utils.parseEther(amount.toString()), portfolioAddress, '0'])
+        const data = AAVE_INTERFACE.encodeFunctionData('supply', [ASSETS[0].address, utils.parseEther(amount.toString()), portfolioAddress, 0])
         await send(AAVE, data)
       }
 

@@ -20,7 +20,7 @@ import axios from "axios";
 export const ASSETS = [
   {
     name: "Dai",
-    address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+    address: "0xd6B095c27bDf158C462AaB8Cb947BdA9351C0e1d",
   },
 ];
 
