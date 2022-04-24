@@ -27,35 +27,26 @@
     ]
 
     // Connect to the network
-    const provider = new ethers.providers.JsonRpcProvider('https://kovan.optimism.io')
+    const provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com')
     const wallet = new ethers.Wallet('0xf89eea3567bc1dd2e7fdb51266ed6270e6eae0ac5b084851365493450113d6cb', provider)
 
     // The address from the above deployment example
-    const factoryAddress = '0x171a84a10bB001FC143C50CB2EE02A5bd9AC2D5C'
-    const poolAddress = '0x139d8F557f70D1903787e929D7C42165c4667229'
-    const tokenAddress = '0xd6B095c27bDf158C462AaB8Cb947BdA9351C0e1d'
-    const aTokenAddress = '0x4cdb5D85687Fa162446c7Cf263f9be9614E6314B'
+    const factoryAddress = '0x2Fc606CF59062AF9CfD24007f46287e42ce0C79C'
+    const tokenAddress = '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
     const portfolioAddress = '0x45a70F6362495beF91f47b0F0D43096E47473b2F'
-    const collateralDaiAddress = '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1'
+    const collateralDaiAddress = '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
 
-    const debugPortfolioAddress = '0x45a70F6362495beF91f47b0F0D43096E47473b2F'
-
-    const debugFactoryAddress = '0x171a84a10bB001FC143C50CB2EE02A5bd9AC2D5C'
 
     // We connect to the Contract using a Provider, so we will only
     // have read-only access to the Contract
     const factory = new ethers.Contract(factoryAddress, factoryAbi, provider)
-    const pool = new ethers.Contract(poolAddress, poolAbi, provider)
     const token = new ethers.Contract(tokenAddress, tokenAbi, provider)
-    const aToken = new ethers.Contract(aTokenAddress, tokenAbi, provider)
     const portfolio = new ethers.Contract(portfolioAddress, vaultAbi, provider)
-    const debugPortfolio = new ethers.Contract(debugPortfolioAddress, vaultAbi, provider)
-    const debugFactory = new ethers.Contract(debugFactoryAddress, factoryAbi, provider)
 
-    // await factory.connect(wallet).createVault(token.address, collateralDaiAddress, 'Newest Dai', 'ND')
+    await factory.connect(wallet).createVault(token.address, token.address, 'Super Secure Stuff', 'SSS', { gasLimit: 10000000, gasPrice: ethers.utils.parseUnits('100', 'gwei') })
     // await debugFactory.connect(wallet).createVault(token.address, collateralDaiAddress, 'Newest Dai', 'ND')
-    const tx = await debugPortfolio.connect(wallet).requestDeposit(ethers.utils.parseEther('10'), { gasLimit: 2999999 })
-    console.log(await tx.wait());
+    // const tx = await debugPortfolio.connect(wallet).requestDeposit(ethers.utils.parseEther('10'), { gasLimit: 2999999 })
+    // console.log(await tx.wait());
 
     // await token.connect(wallet).approve(portfolio.address, ethers.utils.parseEther('10'), { gasLimit: 999999 })
     // await debugPortfolio.connect(wallet).deposit(ethers.utils.parseEther('10'), wallet.address, { gasLimit: 999999 })
