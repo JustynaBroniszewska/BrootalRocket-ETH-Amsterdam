@@ -8,6 +8,7 @@ import {
   Textarea,
   Button,
   Spinner,
+  Spacer,
 } from "@chakra-ui/react";
 import { SUPPORTED_NETWORKS } from "../networks";
 import { useContractFunction, useEthers } from "@usedapp/core";
@@ -106,7 +107,8 @@ export const Create = () => {
             placeholder="Best investement in your life!"
           />
         </FormControl>
-        <Button type="submit" w="32">
+        <Spacer />
+        <Button type="submit" w="full" colorScheme="blue">
           {state.status === "None" ? "Create" : <Spinner />}
         </Button>
       </VStack>
