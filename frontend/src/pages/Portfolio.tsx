@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { Button, VStack, Box, FormControl, FormLabel, Select, useTabList, Input } from "@chakra-ui/react";
 import { Contract, utils } from 'ethers'
 import { ASSETS } from "./Create";
+import axios from 'axios'
 
 export const Portfolio = () => {
 
@@ -45,7 +46,6 @@ export const Portfolio = () => {
     getDescription();
   }, [account, data?.vault?.name]);
 
-  console.log(data)
   return <div>
     {data?.vault?.name}
     <br />
