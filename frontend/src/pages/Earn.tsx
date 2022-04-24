@@ -26,6 +26,7 @@ import {
   NumberInputField,
   Spacer,
   Skeleton,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   useBlockNumber,
@@ -94,10 +95,12 @@ const Portfolio = ({ vault }: PortfolioProps) => {
     id,
     new utils.Interface([
       "function totalAssets() public view returns (uint256)",
-      "function deposit(uint256 amount, address receiver) external override returns (uint256 shares)",
+      'function requestDeposit(int256)',
+      'function deposit(uint256 amount, address receiver) returns (uint256)',
     ])
   );
   const { send: deposit } = useContractFunction(contract, "deposit");
+  const { send: requestDeposit } = useContractFunction(contract, "requestDeposit");
 
   const { value } =
     useCall({
@@ -152,6 +155,7 @@ const Portfolio = ({ vault }: PortfolioProps) => {
                 <ActionForm
                   actionName="Deposit"
                   onSubmit={deposit}
+                  preSubmit={requestDeposit}
                   vaultAddress={id}
                 />
               </TabPanel>
@@ -167,14 +171,22 @@ interface ActionFormProps {
   actionName: string;
   onSubmit: (...args: any[]) => void;
   vaultAddress: string;
+  preSubmit?: (...args: any[]) => void;
+}
+
+const sleep = (milliseconds: number) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 const ActionForm = ({
   actionName,
   onSubmit,
   vaultAddress,
+  preSubmit
 }: ActionFormProps) => {
   const { account } = useEthers();
+  const [loading, setLoading] = useState(false)
+  const [canDeposit, setCanDeposit] = useState(false)
   const [amount, setAmount] = useState(0);
   const allowance = useTokenAllowance(ASSETS[0].address, account, vaultAddress);
   const needsApprove =
@@ -188,6 +200,15 @@ const ActionForm = ({
     "approve"
   );
 
+  const request = async () => {
+    setLoading(true);
+    if (preSubmit) {
+      preSubmit(0, { gasLimit: 10000000 }); 
+      await sleep(30_000);
+      setLoading(false);
+      setCanDeposit(true);
+    }
+  }
   return (
     <form
       onSubmit={async (e) => {
@@ -198,7 +219,7 @@ const ActionForm = ({
         } else {
           const target = e.target as any;
           const amount = +target.amount.value;
-          await onSubmit(utils.parseEther(amount.toString()), account);
+          await onSubmit(utils.parseEther(amount.toString()), account, { gasLimit: 2000000 });
         }
       }}
     >
@@ -216,7 +237,8 @@ const ActionForm = ({
           </NumberInput>
           <Button>Max</Button>
           <Spacer />
-          <Button type="submit" colorScheme="blue" w="36">
+          {preSubmit && !canDeposit && <Button colorScheme="blue" w="36" onClick={request}>Request{loading && <Spinner/>}</Button>}
+          <Button disabled={!canDeposit} type="submit" colorScheme="blue" w="36">
             {needsApprove ? "Approve" : actionName}
           </Button>
         </Flex>

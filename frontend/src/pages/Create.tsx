@@ -25,15 +25,18 @@ export const ASSETS = [
   },
 ];
 
+
+const COLLATERAL_DAI = '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1'
+
 export const Create = () => {
   const { switchNetwork, account } = useEthers();
   const { signIn } = useSiweProvider();
   const navigate = useNavigate();
   const { send, state } = useContractFunction(
     new Contract(
-      "0xDfB4F647fB6059c1E37E56C485d6bF585B8be44b",
+      "0x4C22b9D0687EA4f2f19a97BceeE017841086064d",
       new utils.Interface([
-        "function createVault(address asset, string memory name, string memory symbol) public ",
+        "function createVault(address asset, address collateralAsset, string memory name, string memory symbol) public",
       ])
     ),
     "createVault"
@@ -77,7 +80,8 @@ export const Create = () => {
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
-          await send(asset, portfolioName, symbol);
+          console.log({asset, COLLATERAL_DAI, portfolioName, symbol})
+          await send(asset, COLLATERAL_DAI, portfolioName, symbol, { gasLimit: 3000000 });
         }}
       >
         <FormControl>
