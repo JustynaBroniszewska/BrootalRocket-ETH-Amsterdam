@@ -1,11 +1,13 @@
 import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from 'react'
-import { useBlockNumber, useContractFunction, useEthers } from '@usedapp/core'
+import { useBlockNumber, useContractFunction, useEthers, useTokenAllowance } from '@usedapp/core'
 import { useParams } from "react-router-dom";
 import { Button, VStack, Box, FormControl, FormLabel, Select, useTabList, Input } from "@chakra-ui/react";
 import { Contract, utils } from 'ethers'
 import { ASSETS } from "./Create";
 import axios from 'axios'
+
+const AAVE_INTERFACE = new utils.Interface(['function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) public'])
 
 export const Portfolio = () => {
 
@@ -41,7 +43,7 @@ export const Portfolio = () => {
           `http://localhost:3001/portfolio/${account}/${data?.vault?.name}`
         );
         setDescription(res.data.description);
-      } catch {}
+      } catch { }
     };
     getDescription();
   }, [account, data?.vault?.name]);
@@ -49,9 +51,9 @@ export const Portfolio = () => {
   return <div>
     {data?.vault?.name}
     <br />
-    {data?.vault?.id}      
+    {data?.vault?.id}
     <br />
-      {description}
+    {description}
     <ManageModal portfolioAddress={data?.vault?.id} />
   </div>
 }
@@ -83,21 +85,27 @@ const ManageModal = ({ portfolioAddress }: { portfolioAddress: string }) => {
 
 const SUPPORTED_AAVE_OPERATIONS = ['deposit', 'borrow', 'withdraw']
 
-const AAVE = '0x794a61358D6845594F94dc1DB02A252b5b4814aD'
+const AAVE = '0x139d8F557f70D1903787e929D7C42165c4667229'
 
 const ManageAave = ({ portfolioAddress }: { portfolioAddress: string }) => {
-  const contract = new Contract(AAVE, new utils.Interface(['function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) public']))
-  const { send, state } = useContractFunction(contract, 'supply')
-  console.log(state)
+  const [amount, setAmount] = useState('0')
+  const approval = useTokenAllowance(ASSETS[0].address, portfolioAddress, AAVE)
+  const contract = new Contract(portfolioAddress, new utils.Interface(['function execute(address, bytes) public']))
+  const needsApprove = approval?.lt(utils.parseEther(amount))
+  const { send } = useContractFunction(contract, 'execute')
+  const tokenInt = new utils.Interface(["function approve(address, uint256) public"])
   return (<VStack
     as="form"
     maxW="sm"
     mt="4"
     onSubmit={async (e) => {
       e.preventDefault();
-      const target = e.target as any;
-      console.log('send?', target.amount.value, utils.parseEther(target.amount.value.toString()))
-      await send(ASSETS[0].address, utils.parseEther(target.amount.value.toString()), portfolioAddress, '')
+      if (needsApprove) {
+        await send(ASSETS[0].address, tokenInt.encodeFunctionData('approve', [AAVE, utils.parseEther(amount.toString())]))
+      } else {
+        const data = AAVE_INTERFACE.encodeFunctionData('supply', [ASSETS[0].address, utils.parseEther(amount.toString()), portfolioAddress, '0'])
+        await send(AAVE, data)
+      }
 
     }}>
     <FormControl>
@@ -109,11 +117,11 @@ const ManageAave = ({ portfolioAddress }: { portfolioAddress: string }) => {
       </Select>
       <FormControl>
         <FormLabel htmlFor="amount">Amount:</FormLabel>
-        <Input id="amount" placeholder="Amount"></Input>
+        <Input id="amount" placeholder="Amount" onChange={e => setAmount(e.target.value)}></Input>
       </FormControl>
     </FormControl>
     <Button type="submit" w="32">
-      Send
+      {needsApprove ? 'Approve' : 'Send'}
     </Button>
   </VStack>)
 }
