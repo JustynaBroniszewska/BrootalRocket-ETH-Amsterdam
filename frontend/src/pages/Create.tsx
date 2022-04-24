@@ -31,9 +31,9 @@ export const Create = () => {
   const navigate = useNavigate();
   const { send, state } = useContractFunction(
     new Contract(
-      "0xDfB4F647fB6059c1E37E56C485d6bF585B8be44b",
+      "0xc5A536f17Af89d4958638e41350A423D3495BB40",
       new utils.Interface([
-        "function createVault(address asset, string memory name, string memory symbol) public ",
+        "function createVault(address asset, string memory name, string memory symbol) public",
       ])
     ),
     "createVault"
